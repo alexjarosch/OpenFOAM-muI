@@ -18,6 +18,37 @@ after having installed OpenFOAM on your system, go into this folder and
 ```
 wmake libso
 ```
+to clean the build, use
+```
+wclean
+```
+
+## Usage
+
+The viscosity library will be placed into `$FOAM_USER_LIBBIN` and is called `libviscositymuI.so`.
+To make use of the library with a solver place the following code at the bottom of `system/controlDict`:
+```
+libs
+(
+    "libviscositymuI.so"
+);
+```
+
+Parameters of the 𝜇(I) rheology are defined in `constant/transportProperties`:
+```
+transportModel muI;
+muICoeffs
+{
+    mus      0.3;
+    mud      0.5;
+    I0       0.05;
+    dg       1.0e-4;
+    rhog     400;
+    nuMax    1e3;
+    nuMin    1e-5;
+}
+
+```
 
 ## Disclaimer
 
