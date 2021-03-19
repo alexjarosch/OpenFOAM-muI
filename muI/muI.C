@@ -54,17 +54,40 @@ namespace viscosityModels
 Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muI::calcNu() const
 {
-    Info<< "Calculate mu(I) based on pressure\n" << endl;
-    const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p_rgh");
-    tmp<volScalarField> sr(max(strainRate(), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL)));
-    return
-    (
-        max(
-            min(
-                (calcMuI()*ptot)/(2.0*rhog_*sr()), nuMax_
-            ), nuMin_
-        )
-    );
+    const objectRegistry& db = U_.db();
+    if (db.foundObject<volScalarField>("p")) {
+        Info<< "Calculate mu(I) based on pressure" << endl;
+        const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p");
+        tmp<volScalarField> sr(max(strainRate(), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL)));
+        return
+        (
+            max(
+                min(
+                    (calcMuI()*max(ptot, dimensionedScalar ("pmin", dimPressure, 1.0)))/(2.0*rhog_*sr()), nuMax_
+                ), nuMin_
+            )
+        );
+    } else{
+        Info<< "Pressure not found for mu(I), return zero" << endl;
+        return  tmp<volScalarField>
+        (
+            new volScalarField
+            (
+                IOobject
+                (
+                    "nuis0",
+                    U_.time().timeName(),
+                    U_.db(),
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE,
+                    false
+                ),
+               U_.mesh(),
+               dimensionedScalar("nuis0", dimViscosity, 0.0)
+           )
+        );
+    }
+
 }
 
 Foam::tmp<Foam::volScalarField>
@@ -80,31 +103,36 @@ Foam::viscosityModels::muI::calcMuI() const
 Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muI::calcI() const
 {
-    Info<< "Calculate I based on pressure\n" << endl;
-    const volScalarField& pp = U_.mesh().lookupObject<volScalarField>("p_rgh");
-    tmp<volScalarField> sr(max(strainRate(), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL)));
-    tmp<volScalarField> sr2(mag(symm(fvc::grad(U_))));
-    return
-    (
-        2.0*dg_*sr()*pow((max(pp, dimensionedScalar ("pmin", dimPressure, 1.0)))/rhog_, -0.5)
-    );
-    // return  tmp<volScalarField>
-    // (
-    //     new volScalarField
-    //     (
-    //         IOobject
-    //         (
-    //             "II0",
-    //             U_.time().timeName(),
-    //             U_.db(),
-    //             IOobject::NO_READ,
-    //             IOobject::NO_WRITE,
-    //             false
-    //         ),
-    //        U_.mesh(),
-    //        dimensionedScalar("II0", dimless, 0.5)
-    //    )
-    // );
+    const objectRegistry& db = U_.db();
+    if (db.foundObject<volScalarField>("p")) {
+        // Info<< "Calculate I based on pressure" << endl;
+        const volScalarField& pp = U_.mesh().lookupObject<volScalarField>("p");
+        tmp<volScalarField> sr(max(strainRate(), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL)));
+        tmp<volScalarField> sr2(mag(symm(fvc::grad(U_))));
+        return
+        (
+            2.0*dg_*sr()*pow((max(pp, dimensionedScalar ("pmin", dimPressure, 1.0)))/rhog_, -0.5)
+        );
+    } else {
+        Info<< "Pressure not found for I, return zero" << endl;
+        return  tmp<volScalarField>
+        (
+            new volScalarField
+            (
+                IOobject
+                (
+                    "II0",
+                    U_.time().timeName(),
+                    U_.db(),
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE,
+                    false
+                ),
+               U_.mesh(),
+               dimensionedScalar("II0", dimless, 0.0)
+           )
+        );
+    }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
