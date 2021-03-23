@@ -95,7 +95,7 @@ Foam::viscosityModels::muIreg::calcMuI() const
 {
     return
     (
-        (mus_*I0_ + mud_*calcI() + I1_*pow(calcI(), 2))/
+        (mus_*I0_ + mud_*calcI() + muInf_*pow(calcI(), 2))/
         (I0_ + calcI())
     );
 }
@@ -149,8 +149,8 @@ Foam::viscosityModels::muIreg::muIreg
     muIregCoeffs_(viscosityProperties.optionalSubDict(typeName + "Coeffs")),
     mus_("mus", dimless, muIregCoeffs_),
     mud_("mud", dimless, muIregCoeffs_),
+    muInf_("muInf", dimless, muIregCoeffs_),
     I0_("I0", dimless, muIregCoeffs_),
-    I1_("I1", dimless, muIregCoeffs_),
     dg_("dg", dimLength, muIregCoeffs_),
     rhog_("rhog", dimDensity, muIregCoeffs_),
     nuMax_("nuMax", dimViscosity, muIregCoeffs_),
@@ -207,8 +207,8 @@ bool Foam::viscosityModels::muIreg::read
 
     muIregCoeffs_.lookup("mus") >> mus_;
     muIregCoeffs_.lookup("mud") >> mud_;
+    muIregCoeffs_.lookup("muInf") >> muInf_;
     muIregCoeffs_.lookup("I0") >> I0_;
-    muIregCoeffs_.lookup("I1") >> I1_;
     muIregCoeffs_.lookup("dg") >> dg_;
     muIregCoeffs_.lookup("rhog") >> rhog_;
     muIregCoeffs_.lookup("nuMax") >> nuMax_;

@@ -66,8 +66,8 @@ class muIreg
 
         dimensionedScalar mus_;
         dimensionedScalar mud_;
+        dimensionedScalar muInf_;
         dimensionedScalar I0_;
-        dimensionedScalar I1_;
         dimensionedScalar dg_;
         dimensionedScalar rhog_;
         dimensionedScalar nuMax_;
