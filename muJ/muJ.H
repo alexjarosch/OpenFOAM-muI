@@ -71,10 +71,13 @@ class muJ
         dimensionedScalar rhog_;
         dimensionedScalar nuMax_;
         dimensionedScalar nuMin_;
+        dimensionedScalar pMin_;
 
         volScalarField nu_;
-        volScalarField muJ_;
-        volScalarField I_;
+        mutable volScalarField mu_;
+        mutable volScalarField I_;
+        mutable volScalarField peff_;
+        mutable volScalarField normD_;
 
 
     // Private Member Functions
@@ -82,9 +85,13 @@ class muJ
         //- Calculate and return the laminar viscosity
         tmp<volScalarField> calcNu() const;
         //- Calculate and return the mu(I) rheology number
-        tmp<volScalarField> calcmuJ() const;
+        tmp<volScalarField> calcMu() const;
         //- Calculate and return the inertial I number
         tmp<volScalarField> calcI() const;
+        //- Calculate and return the effective pressure
+        tmp<volScalarField> calcPeff() const;
+        //- Calculate and return the effective pressure
+        tmp<volScalarField> calcNormD() const;
 
 
 public:
@@ -118,6 +125,30 @@ public:
             return nu_;
         }
 
+        //- Return the mu(J) friction
+        virtual tmp<volScalarField> mu() const
+        {
+            return mu_;
+        }
+
+        //- Return the inertial number I
+        virtual tmp<volScalarField> I() const
+        {
+            return I_;
+        }
+
+        //- Return the effective pressure
+        virtual tmp<volScalarField> peff() const
+        {
+            return peff_;
+        }
+
+        //- Return the norm of the deviatoric strain rate
+        virtual tmp<volScalarField> normD() const
+        {
+            return normD_;
+        }
+
         //- Return the laminar viscosity for patch
         virtual tmp<scalarField> nu(const label patchi) const
         {
@@ -127,9 +158,11 @@ public:
         //- Correct the laminar viscosity
         virtual void correct()
         {
-            nu_ = calcNu();
-            muJ_ = calcmuJ();
+            normD_ = calcNormD();
+            peff_ = calcPeff();
             I_ = calcI();
+            mu_ = calcMu();
+            nu_ = calcNu();
         }
 
         //- Read transportProperties dictionary

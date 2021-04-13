@@ -63,7 +63,7 @@ Foam::viscosityModels::muJ::calcNu() const
         (
             max(
                 min(
-                    (calcmuJ()*max(ptot, dimensionedScalar ("pmin", dimPressure, 1.0)))/(2.0*rhog_*sr()), nuMax_
+                    (calcMu()*max(ptot, dimensionedScalar ("pmin", dimPressure, 1.0)))/(2.0*rhog_*sr()), nuMax_
                 ), nuMin_
             )
         );
@@ -91,7 +91,7 @@ Foam::viscosityModels::muJ::calcNu() const
 }
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModels::muJ::calcmuJ() const
+Foam::viscosityModels::muJ::calcMu() const
 {
     return
     (
@@ -135,6 +135,43 @@ Foam::viscosityModels::muJ::calcI() const
     }
 }
 
+Foam::tmp<Foam::volScalarField>
+Foam::viscosityModels::muJ::calcPeff() const
+{
+    const objectRegistry& db = U_.db();
+    if (db.foundObject<volScalarField>("p")) {
+        // Info<< "Calculate I based on pressure" << endl;
+        const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p");
+        return max(ptot, pMin_);
+    } else {
+        Info<< "Effective pressure not calculated, return zero" << endl;
+        return  tmp<volScalarField>
+        (
+            new volScalarField
+            (
+                IOobject
+                (
+                    "peff0",
+                    U_.time().timeName(),
+                    U_.db(),
+                    IOobject::NO_READ,
+                    IOobject::NO_WRITE,
+                    false
+                ),
+               U_.mesh(),
+               dimensionedScalar("peff0", dimPressure, 0.0)
+           )
+        );
+    }
+}
+
+Foam::tmp<Foam::volScalarField>
+Foam::viscosityModels::muJ::calcNormD() const
+{
+    // note this is different than the classical OpenFOAM strainRate
+    return mag(symm(fvc::grad(U_)))/sqrt(2.0);
+}
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::viscosityModels::muJ::muJ
@@ -154,6 +191,7 @@ Foam::viscosityModels::muJ::muJ
     rhog_("rhog", dimDensity, muJCoeffs_),
     nuMax_("nuMax", dimViscosity, muJCoeffs_),
     nuMin_("nuMin", dimViscosity, muJCoeffs_),
+    pMin_("pMin", dimPressure, muJCoeffs_),
     nu_
     (
         IOobject
@@ -166,17 +204,17 @@ Foam::viscosityModels::muJ::muJ
         ),
         calcNu()
     ),
-    muJ_
+    mu_
     (
         IOobject
         (
-            "muJ",
+            "mu",
             U_.time().timeName(),
             U_.db(),
             IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
-        calcmuJ()
+        calcMu()
     ),
     I_
     (
@@ -189,6 +227,30 @@ Foam::viscosityModels::muJ::muJ
             IOobject::AUTO_WRITE
         ),
         calcI()
+    ),
+    peff_
+    (
+        IOobject
+        (
+            "peff",
+            U_.time().timeName(),
+            U_.db(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        calcPeff()
+    ),
+    normD_
+    (
+        IOobject
+        (
+            "normD",
+            U_.time().timeName(),
+            U_.db(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        calcNormD()
     )
 {}
 
@@ -211,6 +273,7 @@ bool Foam::viscosityModels::muJ::read
     muJCoeffs_.lookup("rhog") >> rhog_;
     muJCoeffs_.lookup("nuMax") >> nuMax_;
     muJCoeffs_.lookup("nuMin") >> nuMin_;
+    muJCoeffs_.lookup("pMin") >> pMin_;
 
     return true;
 }
