@@ -57,13 +57,12 @@ Foam::viscosityModels::muJ::calcNu() const
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
         Info<< "Calculate mu(I) based on pressure" << endl;
-        const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p");
-        tmp<volScalarField> sr(max(strainRate(), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL)));
+        tmp<volScalarField> normDlim(normD_+dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
         return
         (
             max(
                 min(
-                    (calcMu()*max(ptot, dimensionedScalar ("pmin", dimPressure, 1.0)))/(2.0*rhog_*sr()), nuMax_
+                    (mu_*peff_)/(2.0*rhog_*normDlim()), nuMax_
                 ), nuMin_
             )
         );
@@ -93,11 +92,17 @@ Foam::viscosityModels::muJ::calcNu() const
 Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muJ::calcMu() const
 {
-    return
-    (
-        (mus_*I0_ + mud_*calcI())/
-        (I0_ + calcI())
-    );
+    const objectRegistry& db = U_.db();
+    if (db.foundObject<volScalarField>("p")) {
+        return
+        (
+            (mus_*I0_ + mud_*I_)/
+            (I0_ + I_)
+        );
+    } else {
+        Info<< "Pressure not found for mu(J), return mus" << endl;
+        return mus_*calcI();
+    }
 }
 
 Foam::tmp<Foam::volScalarField>
@@ -106,12 +111,9 @@ Foam::viscosityModels::muJ::calcI() const
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
         // Info<< "Calculate I based on pressure" << endl;
-        const volScalarField& pp = U_.mesh().lookupObject<volScalarField>("p");
-        tmp<volScalarField> sr(max(strainRate(), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL)));
-        tmp<volScalarField> sr2(mag(symm(fvc::grad(U_))));
         return
         (
-            2.0*dg_*sr()*pow((max(pp, dimensionedScalar ("pmin", dimPressure, 1.0)))/rhog_, -0.5)
+            2.0*dg_*normD_*pow((peff_ + dimensionedScalar ("psmall", dimPressure, SMALL))/rhog_, -0.5)
         );
     } else {
         Info<< "Pressure not found for I, return zero" << endl;
