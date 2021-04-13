@@ -56,7 +56,7 @@ Foam::viscosityModels::muJ::calcNu() const
 {
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
-        Info<< "Calculate mu(I) based on pressure" << endl;
+        Info<< "Calculate mu(J) based on pressure" << endl;
         tmp<volScalarField> normDlim(normD_+dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
         return
         (
@@ -67,7 +67,7 @@ Foam::viscosityModels::muJ::calcNu() const
             )
         );
     } else{
-        Info<< "Pressure not found for mu(I), return zero" << endl;
+        Info<< "Pressure not found for mu(J), return zero" << endl;
         return  tmp<volScalarField>
         (
             new volScalarField
