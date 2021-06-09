@@ -14,11 +14,18 @@ as a scientific basis for this work I follow the following papers:
 
 ## Installation
 
-after having installed OpenFOAM on your system, go into this folder and
+after having installed OpenFOAM on your system, clone this git repository to a directory on your system:
+
 ```
+git clone https://github.com/alexjarosch/OpenFOAM-muI.git
+```
+now change into the folder just created and compile the code
+
+```
+cd OpenFOAM-muI
 wmake libso
 ```
-to clean the build, use
+If you want to clean the build, use
 ```
 wclean
 ```
@@ -36,8 +43,8 @@ libs
 
 Parameters of the regularized 𝜇(I) rheology are defined in `constant/transportProperties`:
 ```
-    transportModel muJreg;
-    muJregCoeffs
+    transportModel muIreg;
+    muIregCoeffs
     {
         mus      0.342;
         mud      0.557;
@@ -53,12 +60,15 @@ Parameters of the regularized 𝜇(I) rheology are defined in `constant/transpor
     rho          2500;
 ```
 
+## Examples
+
+in the `run` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case "damBreak". You can run a regularized and a non-regularized version of the examples.
+
 ## Which Implementation
 
 Two versions of a 𝜇(I) rheology are implemented:
-* muI follows the classical, unregularized 𝜇(I) rheology, implemented in accordance with equation 2.21 in Barker & Gray 2017
-* muIreg is the regularized version of a 𝜇(I) rheology, implemented accordance equation 6.3 in Barker & Gray 2017
-
+* muI follows the classical, unregularized 𝜇(I) rheology, implemented in accordance with equation 2.21 in Barker & Gray 2017.
+* muIreg is the regularized version of a 𝜇(I) rheology, implemented accordance equation 6.3 in Barker & Gray 2017.
 
 
 ## Disclaimer

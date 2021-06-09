@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+phases (snow air);
+
+snow
+{
+    transportModel muIreg;
+    muIregCoeffs
+    {
+        mus      0.342;
+        mud      0.557;
+        muInf    0.05;
+        alphaReg 1.9;
+        I0       0.069;
+        dg       5.0e-4;
+        rhog     2500;
+        nuMax    1e3;
+        nuMin    1e-5;
+        pMin     10.0;
+    }
+    // transportModel Newtonian;
+    // nu           1e-6;
+    rho          2500;
+}
+
+air
+{
+    transportModel  Newtonian;
+    nu              1.48e-05;
+    rho             1;
+}
+
+sigma            0.0;
+
+// ************************************************************************* //
