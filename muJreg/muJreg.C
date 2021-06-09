@@ -93,11 +93,15 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muJreg::calcMu() const
 {
     const objectRegistry& db = U_.db();
+    dimensionedScalar IVsmall("IVsmall", dimless, VSMALL);
+
     if (db.foundObject<volScalarField>("p")) {
         return
         (
-            (mus_*I0_ + mud_*I_ + muInf_*pow(I_, 2))/
-            (I0_ + I_)
+            // assume that I and A_m are positive
+            pos(IN1_ - I_)*sqrt(alphaReg_/(log(A_m_) - log(I_ + IVsmall)))
+            +
+            pos(I_ - IN1_)*(mus_*I0_ + mud_*I_ + muInf_*pow(I_, 2))/(I0_ + I_)
         );
     } else {
         Info<< "Pressure not found for mu(J), return mus" << endl;
