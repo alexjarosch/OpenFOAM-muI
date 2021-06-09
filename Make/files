@@ -1,6 +1,4 @@
 muI/muI.C
 muIreg/muIreg.C
-muJ/muJ.C
-muJreg/muJreg.C
 
 LIB = $(FOAM_USER_LIBBIN)/libviscositymuI

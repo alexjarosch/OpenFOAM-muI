@@ -34,21 +34,32 @@ libs
 );
 ```
 
-Parameters of the 𝜇(I) rheology are defined in `constant/transportProperties`:
+Parameters of the regularized 𝜇(I) rheology are defined in `constant/transportProperties`:
 ```
-transportModel muI;
-muICoeffs
-{
-    mus      0.3;
-    mud      0.5;
-    I0       0.05;
-    dg       1.0e-4;
-    rhog     400;
-    nuMax    1e3;
-    nuMin    1e-5;
-}
+    transportModel muJreg;
+    muJregCoeffs
+    {
+        mus      0.342;
+        mud      0.557;
+        muInf    0.05;
+        alphaReg 1.9;
+        I0       0.069;
+        dg       5.0e-4;
+        rhog     2500;
+        nuMax    1e3;
+        nuMin    1e-5;
+        pMin     10.0;
+    }
+    rho          2500;
+```
 
-```
+## Which Implementation
+
+Two versions of a 𝜇(I) rheology are implemented:
+* muI follows the classical, unregularized 𝜇(I) rheology, implemented in accordance with equation 2.21 in Barker & Gray 2017
+* muIreg is the regularized version of a 𝜇(I) rheology, implemented accordance equation 6.3 in Barker & Gray 2017
+
+
 
 ## Disclaimer
 

@@ -22,19 +22,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::viscosityModels::muI
+    Foam::viscosityModels::muIreg
 
 Description
     Regularized mu(I) granular rheology. Following
-    Barker, T., Rauter, M., Maguire, E., Johnson, C., & Gray, J. (2021).
-    Coupling rheology and segregation in granular flows.
-    Journal of Fluid Mechanics, 909, A22. doi:10.1017/jfm.2020.973
+    Barker, T., & Gray, J. (2017).
+    Partial regularisation of the incompressible 𝜇(I)-rheology for granular
+    flow. Journal of Fluid Mechanics, 828, 5-32. doi: 10.1017/jfm.2017.428
 
 Author
     Alexander Jarosch research@alexj.at
 
 SourceFiles
-    muI.C
+    muIreg.C
 
 \*---------------------------------------------------------------------------*/
 
@@ -72,10 +72,16 @@ class muIreg
         dimensionedScalar rhog_;
         dimensionedScalar nuMax_;
         dimensionedScalar nuMin_;
+        dimensionedScalar pMin_;
+        dimensionedScalar alphaReg_;
+        dimensionedScalar IN1_;
+        dimensionedScalar A_m_;
 
         volScalarField nu_;
-        volScalarField muI_;
-        volScalarField I_;
+        mutable volScalarField mu_;
+        mutable volScalarField I_;
+        mutable volScalarField peff_;
+        mutable volScalarField normD_;
 
 
     // Private Member Functions
@@ -83,9 +89,13 @@ class muIreg
         //- Calculate and return the laminar viscosity
         tmp<volScalarField> calcNu() const;
         //- Calculate and return the mu(I) rheology number
-        tmp<volScalarField> calcMuI() const;
+        tmp<volScalarField> calcMu() const;
         //- Calculate and return the inertial I number
         tmp<volScalarField> calcI() const;
+        //- Calculate and return the effective pressure
+        tmp<volScalarField> calcPeff() const;
+        //- Calculate and return the effective pressure
+        tmp<volScalarField> calcNormD() const;
 
 
 public:
@@ -119,6 +129,30 @@ public:
             return nu_;
         }
 
+        //- Return the mu(J) friction
+        virtual tmp<volScalarField> mu() const
+        {
+            return mu_;
+        }
+
+        //- Return the inertial number I
+        virtual tmp<volScalarField> I() const
+        {
+            return I_;
+        }
+
+        //- Return the effective pressure
+        virtual tmp<volScalarField> peff() const
+        {
+            return peff_;
+        }
+
+        //- Return the norm of the deviatoric strain rate
+        virtual tmp<volScalarField> normD() const
+        {
+            return normD_;
+        }
+
         //- Return the laminar viscosity for patch
         virtual tmp<scalarField> nu(const label patchi) const
         {
@@ -128,13 +162,19 @@ public:
         //- Correct the laminar viscosity
         virtual void correct()
         {
-            nu_ = calcNu();
-            muI_ = calcMuI();
+            initRegParameter();
+            normD_ = calcNormD();
+            peff_ = calcPeff();
             I_ = calcI();
+            mu_ = calcMu();
+            nu_ = calcNu();
         }
 
         //- Read transportProperties dictionary
         virtual bool read(const dictionary& viscosityProperties);
+
+        //- Calculate the initial regularization parameters
+        virtual void initRegParameter();
 };
 
 
