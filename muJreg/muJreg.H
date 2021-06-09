@@ -73,6 +73,9 @@ class muJreg
         dimensionedScalar nuMax_;
         dimensionedScalar nuMin_;
         dimensionedScalar pMin_;
+        dimensionedScalar alphaReg_;
+        dimensionedScalar IN1_;
+        dimensionedScalar A_m_;
 
         volScalarField nu_;
         mutable volScalarField mu_;
@@ -159,6 +162,7 @@ public:
         //- Correct the laminar viscosity
         virtual void correct()
         {
+            initRegParameter();
             normD_ = calcNormD();
             peff_ = calcPeff();
             I_ = calcI();
@@ -168,6 +172,9 @@ public:
 
         //- Read transportProperties dictionary
         virtual bool read(const dictionary& viscosityProperties);
+
+        //- Calculate the initial regularization parameters
+        virtual void initRegParameter();
 };
 
 

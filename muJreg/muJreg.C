@@ -174,6 +174,43 @@ Foam::viscosityModels::muJreg::calcNormD() const
     return mag(symm(fvc::grad(U_)))/sqrt(2.0);
 }
 
+void Foam::viscosityModels::muJreg::initRegParameter()
+{
+    // I use Z instead of the lowercase zeta in Barker & Gray 2017
+    scalar tanZs = tan((atan(mus_) + atan(mud_))/2.).value();
+    // lowest I value, close to zero
+    scalar Ilower = 1e-9;
+    // upper I value
+    scalar Iupper = (I0_*(tanZs - mus_)/(mud_ - tanZs)).value();
+    // I for now, I call all values reg here
+    scalar Ireg = (Ilower + Iupper)/2.;
+
+    // solve the equation in a while loop
+    while(Iupper - Ilower > 1e-9)
+    {
+        Ireg = (Ilower + Iupper)/2.;
+
+        scalar muIreg = (mus_ + Ireg*(mud_ - mus_)/(Ireg + I0_)).value();
+        // muPrime in Barker & Gray 2017, derivative of mu with respect to I
+        scalar muPrime = ((I0_*(mud_ - mus_))/(Ireg + I0_)/(Ireg + I0_)).value();
+        // Inupnu is the fraction used in the C eq 3.9 in Barker & Gray
+        scalar Inupnu = muPrime*Ireg/muIreg;
+        // C equation 3.9 in Barker & Gray 2017
+        scalar C = 4*Inupnu*Inupnu - 4*Inupnu + muIreg*muIreg*(1 - Inupnu/2.)*(1 - Inupnu/2.);
+        if (C < 0.)
+            Iupper = Ireg;
+        else
+            Ilower = Ireg;
+    }
+    // the estimated I becomes I^N_1
+    IN1_.value() = Ireg;
+    // A minus according to eq 6.4
+    A_m_ = IN1_*exp(alphaReg_*pow(I0_ + IN1_, 2)/pow(mus_*I0_ + mud_*IN1_ + muInf_*IN1_*IN1_, 2));
+
+    // Info << "IN1 = " << IN1_.value() << endl
+    //      << "A_minus = " << A_m_.value() << endl;
+}
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::viscosityModels::muJreg::muJreg
@@ -195,6 +232,9 @@ Foam::viscosityModels::muJreg::muJreg
     nuMax_("nuMax", dimViscosity, muJregCoeffs_),
     nuMin_("nuMin", dimViscosity, muJregCoeffs_),
     pMin_("pMin", dimPressure, muJregCoeffs_),
+    alphaReg_("alphaReg", dimless, muJregCoeffs_),
+    IN1_("IN1", dimless, 0.),
+    A_m_("A_m", dimless, 0.),
     nu_
     (
         IOobject
@@ -278,6 +318,9 @@ bool Foam::viscosityModels::muJreg::read
     muJregCoeffs_.lookup("nuMax") >> nuMax_;
     muJregCoeffs_.lookup("nuMin") >> nuMin_;
     muJregCoeffs_.lookup("pMin") >> pMin_;
+    muJregCoeffs_.lookup("alphaReg") >> alphaReg_;
+
+    initRegParameter();
 
     return true;
 }
