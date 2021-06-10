@@ -56,7 +56,7 @@ Foam::viscosityModels::muIreg::calcNu() const
 {
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
-        Info<< "Calculate mu(I) based on pressure" << endl;
+        Info<< "Calculate reg mu(I) based on pressure" << endl;
         tmp<volScalarField> normDlim(normD_+dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
         return
         (
@@ -67,7 +67,7 @@ Foam::viscosityModels::muIreg::calcNu() const
             )
         );
     } else{
-        Info<< "Pressure not found for mu(I), return zero" << endl;
+        Info<< "Pressure not found for reg mu(I), return zero" << endl;
         return  tmp<volScalarField>
         (
             new volScalarField
@@ -99,12 +99,12 @@ Foam::viscosityModels::muIreg::calcMu() const
         return
         (
             // assume that I and A_m are positive
-            pos(IN1_ - I_)*sqrt(alphaReg_/(log(A_m_) - log(I_ + IVsmall)))
+            pos(IN1_ - I_)*sqrt(alphaReg_/max((log(A_m_) - log(I_ + IVsmall)), IVsmall))
             +
             pos(I_ - IN1_)*(mus_*I0_ + mud_*I_ + muInf_*pow(I_, 2))/(I0_ + I_)
         );
     } else {
-        Info<< "Pressure not found for mu(I), return mus" << endl;
+        Info<< "Pressure not found for reg mu(I), return mus" << endl;
         return mus_*calcI();
     }
 }
