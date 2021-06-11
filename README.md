@@ -1,4 +1,4 @@
-# incompressible 𝜇(I) rheology for OpenFOAM
+# Incompressible 𝜇(I) rheology for OpenFOAM
 
 this is a viscosity module for OpenFOAM with a focus on granular flow.
 Currently I work on implementing:
