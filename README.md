@@ -67,7 +67,7 @@ For an explanation what the parameters mean and recommended values for a given g
 
 ## Examples
 
-in the `tutorials` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case "damBreak". You can run a regularized and a non-regularized version of the examples.
+In the `tutorials` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case ["damBreak"](https://github.com/OpenFOAM/OpenFOAM-8/tree/master/tutorials/multiphase/interFoam/laminar/damBreak). You can run a regularized and a non-regularized version of the examples.
 
 ## Which Implementation
 
