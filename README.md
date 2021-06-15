@@ -75,6 +75,10 @@ Two versions of a 𝜇(I) rheology are implemented:
 * muI follows the classical, unregularized 𝜇(I) rheology, implemented in accordance with equation 2.21 in Barker & Gray 2017.
 * muIreg is the regularized version of a 𝜇(I) rheology, implemented accordance equation 6.3 in Barker & Gray 2017.
 
+## Regularized 𝜇(I) Python utility
+
+In the 'utils' directory there is a Python script which you can use to estimate the I threshold for the 𝜇(I) regularization. It is the same algorithm the muIreg viscosity module uses.
+
 ## Acknowledgements
 
 [OpenFOAM](https://github.com/OpenFOAM/) is a free, open-source software for computational fluid dynamics (CFD). The development is primarily done by [CFD Direct](https://cfd.direct/) on behalf of the [OpenFOAM](https://openfoam.org/) Foundation.
