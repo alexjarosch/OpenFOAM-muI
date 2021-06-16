@@ -16,6 +16,12 @@ as a scientific basis for this work I follow the following papers:
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4964189.svg)](https://doi.org/10.5281/zenodo.4964189)
 [![OpenFOAM 8](https://img.shields.io/badge/OpenFOAM-8-brightgreen.svg)](https://openfoam.org/)
 
+## Citing the code
+
+If you use this OpenFOAM-muI module in your work/research/simulations, please cite the code in your publications by using the dedicated DOI number for a given code version: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4964189.svg)](https://doi.org/10.5281/zenodo.4964189)
+
+The DOI number displayed here always refers to the latest release of OpenFOAM-muI. If you require a DOI for an older release, please refer to the Zenodo homepage of this code (by clicking the DOI badge above) and find a list of all DOI's for all code releases.
+
 ## Installation
 
 after having installed OpenFOAM on your system, clone this git repository to a directory on your system:
