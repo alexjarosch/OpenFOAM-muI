@@ -12,7 +12,8 @@ as a scientific basis for this work I follow the following papers:
 * [Barker, T., Rauter, M., Maguire, E., Johnson, C., & Gray, J. (2021). Coupling rheology and segregation in granular flows. Journal of Fluid Mechanics, 909, A22.](https://doi.org/10.1017/jfm.2020.973)
 
 
-[![Release](https://img.shields.io/badge/release-1.0-blue.svg)](https://github.com/alexjarosch/OpenFOAM-muI)
+[![Release](https://img.shields.io/badge/release-1.0.1-blue.svg)](https://github.com/alexjarosch/OpenFOAM-muI)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4964189.svg)](https://doi.org/10.5281/zenodo.4964189)
 [![OpenFOAM 8](https://img.shields.io/badge/OpenFOAM-8-brightgreen.svg)](https://openfoam.org/)
 
 ## Installation
