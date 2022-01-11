@@ -76,6 +76,7 @@ class muIreg
         dimensionedScalar alphaReg_;
         dimensionedScalar IN1_;
         dimensionedScalar A_m_;
+        dimensionedScalar rhoAir_;
 
         volScalarField nu_;
         mutable volScalarField mu_;

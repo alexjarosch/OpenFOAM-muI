@@ -145,10 +145,15 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muIreg::calcPeff() const
 {
     const objectRegistry& db = U_.db();
-    if (db.foundObject<volScalarField>("p")) {
+    const Time& runTime= db.time();
+    if (db.foundObject<volScalarField>("p") && runTime.timeIndex() > 1) {
         // Info<< "Calculate I based on pressure" << endl;
         const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p");
-        return max(ptot, pMin_);
+        const volScalarField& gh = U_.mesh().lookupObject<volScalarField>("gh");
+
+        return max(ptot - rhoAir_*gh, pMin_);
+        // return max(ptot, pMin_);
+
     } else {
         Info<< "Effective pressure not calculated, return zero" << endl;
         return  tmp<volScalarField>
@@ -239,6 +244,7 @@ Foam::viscosityModels::muIreg::muIreg
     alphaReg_("alphaReg", dimless, muIregCoeffs_),
     IN1_("IN1", dimless, 0.),
     A_m_("A_m", dimless, 0.),
+    rhoAir_("rhoAir", dimDensity, muIregCoeffs_),
     nu_
     (
         IOobject
@@ -323,6 +329,7 @@ bool Foam::viscosityModels::muIreg::read
     muIregCoeffs_.lookup("nuMin") >> nuMin_;
     muIregCoeffs_.lookup("pMin") >> pMin_;
     muIregCoeffs_.lookup("alphaReg") >> alphaReg_;
+    muIregCoeffs_.lookup("rhoAir") >> rhoAir_;
 
     initRegParameter();
 
