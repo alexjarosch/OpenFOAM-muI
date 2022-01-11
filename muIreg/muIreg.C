@@ -150,9 +150,12 @@ Foam::viscosityModels::muIreg::calcPeff() const
         // Info<< "Calculate I based on pressure" << endl;
         const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p");
         const volScalarField& gh = U_.mesh().lookupObject<volScalarField>("gh");
-
-        return max(ptot - rhoAir_*gh, pMin_);
-        // return max(ptot, pMin_);
+        if (rmHydAirP_) {
+            Info<< "Hydrostatic pressure of air phase removed" << endl;
+            return max(ptot - rhoAir_*gh, pMin_);
+        } else {
+            return max(ptot, pMin_);
+        }
 
     } else {
         Info<< "Effective pressure not calculated, return zero" << endl;
@@ -245,6 +248,7 @@ Foam::viscosityModels::muIreg::muIreg
     IN1_("IN1", dimless, 0.),
     A_m_("A_m", dimless, 0.),
     rhoAir_("rhoAir", dimDensity, muIregCoeffs_),
+    rmHydAirP_(muIregCoeffs_.lookupOrDefault<Switch>("rmHydAirP", false)),
     nu_
     (
         IOobject
@@ -329,6 +333,7 @@ bool Foam::viscosityModels::muIreg::read
     muIregCoeffs_.lookup("nuMin") >> nuMin_;
     muIregCoeffs_.lookup("pMin") >> pMin_;
     muIregCoeffs_.lookup("alphaReg") >> alphaReg_;
+    muIregCoeffs_.lookup("rmHydAirP_") >> rmHydAirP_;
     muIregCoeffs_.lookup("rhoAir") >> rhoAir_;
 
     initRegParameter();

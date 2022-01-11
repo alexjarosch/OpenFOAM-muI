@@ -78,6 +78,9 @@ class muIreg
         dimensionedScalar A_m_;
         dimensionedScalar rhoAir_;
 
+        //- Switch to remove hydrostatic air pressure
+        Switch rmHydAirP_;
+
         volScalarField nu_;
         mutable volScalarField mu_;
         mutable volScalarField I_;
