@@ -72,6 +72,10 @@ class muI
         dimensionedScalar nuMax_;
         dimensionedScalar nuMin_;
         dimensionedScalar pMin_;
+        dimensionedScalar rhoAir_;
+
+        //- Switch to remove hydrostatic air pressure
+        Switch rmHydAirP_;
 
         volScalarField nu_;
         mutable volScalarField mu_;

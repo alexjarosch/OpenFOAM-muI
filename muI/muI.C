@@ -57,12 +57,11 @@ Foam::viscosityModels::muI::calcNu() const
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
         Info<< "Calculate mu(I) based on pressure" << endl;
-        tmp<volScalarField> normDlim(normD_+dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
         return
         (
             max(
                 min(
-                    (mu_*peff_)/(2.0*rhog_*normDlim()), nuMax_
+                    (mu_*peff_)/(2.0*rhog_*normD_), nuMax_
                 ), nuMin_
             )
         );
@@ -113,7 +112,7 @@ Foam::viscosityModels::muI::calcI() const
         // Info<< "Calculate I based on pressure" << endl;
         return
         (
-            2.0*dg_*normD_*pow((peff_ + dimensionedScalar ("psmall", dimPressure, SMALL))/rhog_, -0.5)
+            2.0*dg_*normD_*pow(peff_/rhog_, -0.5)
         );
     } else {
         Info<< "Pressure not found for I, return zero" << endl;
@@ -141,10 +140,18 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muI::calcPeff() const
 {
     const objectRegistry& db = U_.db();
-    if (db.foundObject<volScalarField>("p")) {
+    const Time& runTime= db.time();
+    if (db.foundObject<volScalarField>("p") && runTime.timeIndex() > 1) {
         // Info<< "Calculate I based on pressure" << endl;
         const volScalarField& ptot = U_.mesh().lookupObject<volScalarField>("p");
-        return max(ptot, pMin_);
+        const volScalarField& gh = U_.mesh().lookupObject<volScalarField>("gh");
+        if (rmHydAirP_) {
+            Info<< "Hydrostatic pressure of air phase removed" << endl;
+            return max(ptot - rhoAir_*gh, pMin_);
+        } else {
+            return max(ptot, pMin_);
+        }
+
     } else {
         Info<< "Effective pressure not calculated, return zero" << endl;
         return  tmp<volScalarField>
@@ -161,7 +168,7 @@ Foam::viscosityModels::muI::calcPeff() const
                     false
                 ),
                U_.mesh(),
-               dimensionedScalar("peff0", dimPressure, 0.0)
+               dimensionedScalar("peff0", dimPressure, SMALL)
            )
         );
     }
@@ -171,7 +178,7 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muI::calcNormD() const
 {
     // note this is different than the classical OpenFOAM strainRate
-    return mag(symm(fvc::grad(U_)))/sqrt(2.0);
+    return max(mag(symm(fvc::grad(U_)))/sqrt(2.0), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -194,6 +201,8 @@ Foam::viscosityModels::muI::muI
     nuMax_("nuMax", dimViscosity, muICoeffs_),
     nuMin_("nuMin", dimViscosity, muICoeffs_),
     pMin_("pMin", dimPressure, muICoeffs_),
+    rhoAir_("rhoAir", dimDensity, muICoeffs_),
+    rmHydAirP_(muICoeffs_.lookupOrDefault<Switch>("rmHydAirP", false)),
     nu_
     (
         IOobject
@@ -276,7 +285,8 @@ bool Foam::viscosityModels::muI::read
     muICoeffs_.lookup("nuMax") >> nuMax_;
     muICoeffs_.lookup("nuMin") >> nuMin_;
     muICoeffs_.lookup("pMin") >> pMin_;
-
+    muICoeffs_.lookup("rmHydAirP_") >> rmHydAirP_;
+    muICoeffs_.lookup("rhoAir") >> rhoAir_;
     return true;
 }
 

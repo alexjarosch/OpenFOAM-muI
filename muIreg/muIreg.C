@@ -57,12 +57,11 @@ Foam::viscosityModels::muIreg::calcNu() const
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
         Info<< "Calculate reg mu(I) based on pressure" << endl;
-        tmp<volScalarField> normDlim(normD_+dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
         return
         (
             max(
                 min(
-                    (mu_*peff_)/(2.0*rhog_*normDlim()), nuMax_
+                    (mu_*peff_)/(2.0*rhog_*normD_), nuMax_
                 ), nuMin_
             )
         );
@@ -117,7 +116,7 @@ Foam::viscosityModels::muIreg::calcI() const
         // Info<< "Calculate I based on pressure" << endl;
         return
         (
-            2.0*dg_*normD_*pow((peff_ + dimensionedScalar ("psmall", dimPressure, SMALL))/rhog_, -0.5)
+            2.0*dg_*normD_*pow(peff_/rhog_, -0.5)
         );
     } else {
         Info<< "Pressure not found for I, return zero" << endl;
@@ -173,7 +172,7 @@ Foam::viscosityModels::muIreg::calcPeff() const
                     false
                 ),
                U_.mesh(),
-               dimensionedScalar("peff0", dimPressure, 0.0)
+               dimensionedScalar("peff0", dimPressure, SMALL)
            )
         );
     }
@@ -183,7 +182,7 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muIreg::calcNormD() const
 {
     // note this is different than the classical OpenFOAM strainRate
-    return mag(symm(fvc::grad(U_)))/sqrt(2.0);
+    return max(mag(symm(fvc::grad(U_)))/sqrt(2.0), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
 }
 
 void Foam::viscosityModels::muIreg::initRegParameter()
