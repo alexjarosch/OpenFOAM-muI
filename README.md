@@ -15,6 +15,7 @@ as a scientific basis for this work I follow the following papers:
 [![Release](https://img.shields.io/badge/release-1.0.1-blue.svg)](https://github.com/alexjarosch/OpenFOAM-muI)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4964189.svg)](https://doi.org/10.5281/zenodo.4964189)
 [![OpenFOAM 8](https://img.shields.io/badge/OpenFOAM-8-brightgreen.svg)](https://openfoam.org/)
+[![OpenFOAM 9](https://img.shields.io/badge/OpenFOAM-9-brightgreen.svg)](https://openfoam.org/)
 
 ## Citing the code
 
@@ -24,7 +25,7 @@ The DOI number displayed here always refers to the latest release of OpenFOAM-mu
 
 ## Installation
 
-after having installed OpenFOAM on your system, clone this git repository to a directory on your system:
+Current development on the main branch is for OpenFOAM version 9. After having installed [OpenFOAM](https://openfoam.org/download/) version 9 on your system, clone this git repository to a directory on your system:
 
 ```
 git clone https://github.com/alexjarosch/OpenFOAM-muI.git
@@ -74,7 +75,9 @@ For an explanation what the parameters mean and recommended values for a given g
 
 ## Examples
 
-In the `tutorials` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case ["damBreak"](https://github.com/OpenFOAM/OpenFOAM-8/tree/master/tutorials/multiphase/interFoam/laminar/damBreak/damBreak). You can run a regularized and a non-regularized version of the examples.
+In the `tutorials` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case ["damBreak"](https://github.com/OpenFOAM/OpenFOAM-9/tree/master/tutorials/multiphase/interFoam/laminar/damBreak/damBreak) and are inspired by the benchmark of [Balmforth, N. J., & Kerswell, R. R. (2005). Granular collapse in two dimensions. Journal of Fluid Mechanics, 538, 399-428.](https://doi.org/10.1017/S0022112005005537). You can run a regularized and a non-regularized version of the examples.
+
+**Note:** To reproduce the actual benchmark data of Balmforth and Kerswell, a more advanced configuration of the example cases is required.
 
 ## Which Implementation
 
@@ -92,4 +95,4 @@ In the 'utils' directory there is a Python script which you can use to estimate 
 
 ## Disclaimer
 
-This code is under development and not yet benchmarked against known granular flow examples. **Use at your own risk!**
+This code is under development and not yet fully benchmarked against known granular flow examples. **Use at your own risk!**

@@ -57,19 +57,4 @@ libs
     "libviscositymuI.so"
 );
 
-// functions
-// {
-//     fieldAverage1
-//     {
-//         #includeEtc "caseDicts/postProcessing/fields/fieldAverage.cfg"
-//         restartOnOutput   yes;
-//         mean              yes;
-//
-//         fields
-//         (
-//             U
-//             alpha.snow
-//         );
-//     }
-// }
 // ************************************************************************* //
