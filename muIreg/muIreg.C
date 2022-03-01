@@ -55,13 +55,16 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muIreg::calcNu() const
 {
     const objectRegistry& db = U_.db();
+    const volScalarField& alphag = U_.mesh().lookupObject<volScalarField>("alpha.snow");
+    dimensionedScalar alphaSmall("alphaSmall", dimless, 1e-2);
+
     if (db.foundObject<volScalarField>("p")) {
         Info<< "Calculate reg mu(I) based on pressure" << endl;
         return
         (
             max(
                 min(
-                    (mu_*peff_)/(2.0*rhog_*normD_), nuMax_
+                    (mu_*peff_)/(2.0*rhog_*normD_*max(alphag, alphaSmall)), nuMax_
                 ), nuMin_
             )
         );
