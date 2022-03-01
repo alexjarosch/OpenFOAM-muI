@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::viscosityModels::muIreg
+    Foam::viscosityModels::muIregp
 
 Description
     Regularized mu(I) granular rheology. Following
@@ -34,12 +34,12 @@ Author
     Alexander Jarosch research@alexj.at
 
 SourceFiles
-    muIreg.C
+    muIregp.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef muIreg_H
-#define muIreg_H
+#ifndef muIregp_H
+#define muIregp_H
 
 #include "viscosityModel.H"
 #include "dimensionedScalar.H"
@@ -53,16 +53,16 @@ namespace viscosityModels
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class muIreg Declaration
+                           Class muIregp Declaration
 \*---------------------------------------------------------------------------*/
 
-class muIreg
+class muIregp
 :
     public viscosityModel
 {
     // Private Data
 
-        dictionary muIregCoeffs_;
+        dictionary muIregpCoeffs_;
 
         dimensionedScalar mus_;
         dimensionedScalar mud_;
@@ -106,13 +106,13 @@ class muIreg
 public:
 
     //- Runtime type information
-    TypeName("muIreg");
+    TypeName("muIregp");
 
 
     // Constructors
 
         //- Construct from components
-        muIreg
+        muIregp
         (
             const word& name,
             const dictionary& viscosityProperties,
@@ -122,7 +122,7 @@ public:
 
 
     //- Destructor
-    virtual ~muIreg()
+    virtual ~muIregp()
     {}
 
 

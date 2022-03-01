@@ -26,7 +26,7 @@ Author
 
 \*---------------------------------------------------------------------------*/
 
-#include "muIreg.H"
+#include "muIregp.H"
 #include "addToRunTimeSelectionTable.H"
 #include "surfaceFields.H"
 #include "fvcGrad.H"
@@ -37,12 +37,12 @@ namespace Foam
 {
 namespace viscosityModels
 {
-    defineTypeNameAndDebug(muIreg, 0);
+    defineTypeNameAndDebug(muIregp, 0);
 
     addToRunTimeSelectionTable
     (
         viscosityModel,
-        muIreg,
+        muIregp,
         dictionary
     );
 }
@@ -52,7 +52,7 @@ namespace viscosityModels
 // * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModels::muIreg::calcNu() const
+Foam::viscosityModels::muIregp::calcNu() const
 {
     const objectRegistry& db = U_.db();
     const volScalarField& alphag = U_.mesh().lookupObject<volScalarField>("alpha.snow");
@@ -91,7 +91,7 @@ Foam::viscosityModels::muIreg::calcNu() const
 }
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModels::muIreg::calcMu() const
+Foam::viscosityModels::muIregp::calcMu() const
 {
     const objectRegistry& db = U_.db();
     dimensionedScalar IVsmall("IVsmall", dimless, VSMALL);
@@ -111,7 +111,7 @@ Foam::viscosityModels::muIreg::calcMu() const
 }
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModels::muIreg::calcI() const
+Foam::viscosityModels::muIregp::calcI() const
 {
     const objectRegistry& db = U_.db();
     if (db.foundObject<volScalarField>("p")) {
@@ -143,7 +143,7 @@ Foam::viscosityModels::muIreg::calcI() const
 }
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModels::muIreg::calcPeff() const
+Foam::viscosityModels::muIregp::calcPeff() const
 {
     const objectRegistry& db = U_.db();
     const Time& runTime= db.time();
@@ -181,13 +181,13 @@ Foam::viscosityModels::muIreg::calcPeff() const
 }
 
 Foam::tmp<Foam::volScalarField>
-Foam::viscosityModels::muIreg::calcNormD() const
+Foam::viscosityModels::muIregp::calcNormD() const
 {
     // note this is different than the classical OpenFOAM strainRate
     return max(mag(symm(fvc::grad(U_)))/sqrt(2.0), dimensionedScalar ("vSmall", dimless/dimTime, VSMALL));
 }
 
-void Foam::viscosityModels::muIreg::initRegParameter()
+void Foam::viscosityModels::muIregp::initRegParameter()
 {
     // I use Z instead of the lowercase zeta in Barker & Gray 2017
     scalar tanZs = tan((atan(mus_) + atan(mud_))/2.).value();
@@ -226,7 +226,7 @@ void Foam::viscosityModels::muIreg::initRegParameter()
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::viscosityModels::muIreg::muIreg
+Foam::viscosityModels::muIregp::muIregp
 (
     const word& name,
     const dictionary& viscosityProperties,
@@ -235,22 +235,22 @@ Foam::viscosityModels::muIreg::muIreg
 )
 :
     viscosityModel(name, viscosityProperties, U, phi),
-    muIregCoeffs_(viscosityProperties.optionalSubDict(typeName + "Coeffs")),
-    mus_("mus", dimless, muIregCoeffs_),
-    mud_("mud", dimless, muIregCoeffs_),
-    muInf_("muInf", dimless, muIregCoeffs_),
-    I0_("I0", dimless, muIregCoeffs_),
-    dg_("dg", dimLength, muIregCoeffs_),
-    rhog_("rhog", dimDensity, muIregCoeffs_),
-    nuMax_("nuMax", dimViscosity, muIregCoeffs_),
-    nuMin_("nuMin", dimViscosity, muIregCoeffs_),
-    pMin_("pMin", dimPressure, muIregCoeffs_),
-    alphaReg_("alphaReg", dimless, muIregCoeffs_),
+    muIregpCoeffs_(viscosityProperties.optionalSubDict(typeName + "Coeffs")),
+    mus_("mus", dimless, muIregpCoeffs_),
+    mud_("mud", dimless, muIregpCoeffs_),
+    muInf_("muInf", dimless, muIregpCoeffs_),
+    I0_("I0", dimless, muIregpCoeffs_),
+    dg_("dg", dimLength, muIregpCoeffs_),
+    rhog_("rhog", dimDensity, muIregpCoeffs_),
+    nuMax_("nuMax", dimViscosity, muIregpCoeffs_),
+    nuMin_("nuMin", dimViscosity, muIregpCoeffs_),
+    pMin_("pMin", dimPressure, muIregpCoeffs_),
+    alphaReg_("alphaReg", dimless, muIregpCoeffs_),
     IN1_("IN1", dimless, 0.),
     A_m_("A_m", dimless, 0.),
-    rhoAir_("rhoAir", dimDensity, muIregCoeffs_),
-    alphaSmall_("alphaSmall", dimless, muIregCoeffs_),
-    rmHydAirP_(muIregCoeffs_.lookupOrDefault<Switch>("rmHydAirP", false)),
+    rhoAir_("rhoAir", dimDensity, muIregpCoeffs_),
+    alphaSmall_("alphaSmall", dimless, muIregpCoeffs_),
+    rmHydAirP_(muIregpCoeffs_.lookupOrDefault<Switch>("rmHydAirP", false)),
     nu_
     (
         IOobject
@@ -283,7 +283,7 @@ Foam::viscosityModels::muIreg::muIreg
             U_.time().timeName(),
             U_.db(),
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         calcI()
     ),
@@ -295,7 +295,7 @@ Foam::viscosityModels::muIreg::muIreg
             U_.time().timeName(),
             U_.db(),
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         calcPeff()
     ),
@@ -307,7 +307,7 @@ Foam::viscosityModels::muIreg::muIreg
             U_.time().timeName(),
             U_.db(),
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         calcNormD()
     )
@@ -316,28 +316,28 @@ Foam::viscosityModels::muIreg::muIreg
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-bool Foam::viscosityModels::muIreg::read
+bool Foam::viscosityModels::muIregp::read
 (
     const dictionary& viscosityProperties
 )
 {
     viscosityModel::read(viscosityProperties);
 
-    muIregCoeffs_ = viscosityProperties.optionalSubDict(typeName + "Coeffs");
+    muIregpCoeffs_ = viscosityProperties.optionalSubDict(typeName + "Coeffs");
 
-    muIregCoeffs_.lookup("mus") >> mus_;
-    muIregCoeffs_.lookup("mud") >> mud_;
-    muIregCoeffs_.lookup("muInf") >> muInf_;
-    muIregCoeffs_.lookup("I0") >> I0_;
-    muIregCoeffs_.lookup("dg") >> dg_;
-    muIregCoeffs_.lookup("rhog") >> rhog_;
-    muIregCoeffs_.lookup("nuMax") >> nuMax_;
-    muIregCoeffs_.lookup("nuMin") >> nuMin_;
-    muIregCoeffs_.lookup("pMin") >> pMin_;
-    muIregCoeffs_.lookup("alphaReg") >> alphaReg_;
-    muIregCoeffs_.lookup("rmHydAirP_") >> rmHydAirP_;
-    muIregCoeffs_.lookup("rhoAir") >> rhoAir_;
-    muIregCoeffs_.lookup("alphaSmall") >> alphaSmall_;
+    muIregpCoeffs_.lookup("mus") >> mus_;
+    muIregpCoeffs_.lookup("mud") >> mud_;
+    muIregpCoeffs_.lookup("muInf") >> muInf_;
+    muIregpCoeffs_.lookup("I0") >> I0_;
+    muIregpCoeffs_.lookup("dg") >> dg_;
+    muIregpCoeffs_.lookup("rhog") >> rhog_;
+    muIregpCoeffs_.lookup("nuMax") >> nuMax_;
+    muIregpCoeffs_.lookup("nuMin") >> nuMin_;
+    muIregpCoeffs_.lookup("pMin") >> pMin_;
+    muIregpCoeffs_.lookup("alphaReg") >> alphaReg_;
+    muIregpCoeffs_.lookup("rmHydAirP_") >> rmHydAirP_;
+    muIregpCoeffs_.lookup("rhoAir") >> rhoAir_;
+    muIregpCoeffs_.lookup("alphaSmall") >> alphaSmall_;
 
     initRegParameter();
 
