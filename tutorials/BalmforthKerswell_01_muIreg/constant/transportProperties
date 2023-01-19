@@ -15,25 +15,26 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-phases (grain air);
+phases (snow air);
 
-grain
+snow
 {
     transportModel muIreg;
     muIregCoeffs
     {
-        mus       0.38;
-        mud       0.65;
-        muInf     0.05;
-        alphaReg  1.9;
-        I0        0.3;
-        dg        0.8e-3;
-        rhog      1575.0;
-        nuMax     1e3;
-        nuMin     1e-05;
-        pMin      1.0;
-        rmHydAirP true;
-        rhoAir    1.0;
+        mus        0.38;
+        mud        0.65;
+        muInf      0.05;
+        alphaReg   1.9;
+        I0         0.3;
+        dg         0.8e-3;
+        rhog       1575.0;
+        nuMax      1e3;
+        nuMin      1e-05;
+        pMin       1.0;
+        rmHydAirP  true;
+        rhoAir     1.0;
+        alphaSmall 0.01;
     }
     // transportModel Newtonian;
     // nu           1;

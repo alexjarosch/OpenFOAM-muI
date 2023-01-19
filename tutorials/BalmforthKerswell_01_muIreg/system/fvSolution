@@ -17,10 +17,11 @@ FoamFile
 
 solvers
 {
-    "alpha.grain.*"
+    "alpha.snow.*"
     {
         nAlphaCorr      2;
         nAlphaSubCycles 1;
+        cAlpha          1;
 
         MULESCorr       yes;
         nLimiterIter    5;
