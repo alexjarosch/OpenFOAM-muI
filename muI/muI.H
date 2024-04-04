@@ -73,6 +73,7 @@ class muI
         dimensionedScalar nuMin_;
         dimensionedScalar pMin_;
         dimensionedScalar rhoAir_;
+        dimensionedScalar alphaSmall_;
 
         //- Switch to remove hydrostatic air pressure
         Switch rmHydAirP_;

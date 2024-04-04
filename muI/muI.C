@@ -55,13 +55,15 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muI::calcNu() const
 {
     const objectRegistry& db = U_.db();
+    const volScalarField& alphag = U_.mesh().lookupObject<volScalarField>("alpha.snow");
+
     if (db.foundObject<volScalarField>("p")) {
         Info<< "Calculate mu(I) based on pressure" << endl;
         return
         (
             max(
                 min(
-                    (mu_*peff_)/(2.0*rhog_*normD_), nuMax_
+                    (mu_*peff_)/(2.0*rhog_*normD_*max(alphag, alphaSmall_)), nuMax_
                 ), nuMin_
             )
         );
@@ -202,6 +204,7 @@ Foam::viscosityModels::muI::muI
     nuMin_("nuMin", dimViscosity, muICoeffs_),
     pMin_("pMin", dimPressure, muICoeffs_),
     rhoAir_("rhoAir", dimDensity, muICoeffs_),
+    alphaSmall_("alphaSmall", dimless, muICoeffs_),
     rmHydAirP_(muICoeffs_.lookupOrDefault<Switch>("rmHydAirP", false)),
     nu_
     (
@@ -287,6 +290,7 @@ bool Foam::viscosityModels::muI::read
     muICoeffs_.lookup("pMin") >> pMin_;
     muICoeffs_.lookup("rmHydAirP_") >> rmHydAirP_;
     muICoeffs_.lookup("rhoAir") >> rhoAir_;
+    muICoeffs_.lookup("alphaSmall") >> alphaSmall_;
     return true;
 }
 
