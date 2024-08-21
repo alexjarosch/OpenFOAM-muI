@@ -20,8 +20,24 @@ as a scientific basis for this work I follow the following papers:
 ## Citing the code
 
 If you use this OpenFOAM-muI module in your work/research/simulations, please cite the code in your publications by using the dedicated DOI number for a given code version: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13354106.svg)](https://doi.org/10.5281/zenodo.13354106)
-
 The DOI number displayed here always refers to the latest release of OpenFOAM-muI. If you require a DOI for an older release, please refer to the Zenodo homepage of this code (by clicking the DOI badge above) and find a list of all DOI's for all code releases.
+This is a citation example of the latest version in BibTeX format:
+```
+@software{jarosch_2024_13354106,
+  author       = {Jarosch, Alexander Helmut and
+                  Jóhanesson, Tómas},
+  title        = {{alexjarosch/OpenFOAM-muI: v1.1.0 OpenFOAM mu(I) 
+                   rheology}},
+  month        = aug,
+  year         = 2024,
+  publisher    = {Zenodo},
+  version      = {v1.1.0},
+  doi          = {10.5281/zenodo.13354106},
+  url          = {https://doi.org/10.5281/zenodo.13354106}
+}
+```
+other versions are availabe at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13354106.svg)](https://doi.org/10.5281/zenodo.13354106)
+
 
 ## Installation
 
