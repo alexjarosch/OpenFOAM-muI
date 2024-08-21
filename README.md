@@ -25,7 +25,7 @@ This is a citation example of the latest version in BibTeX format:
 ```
 @software{jarosch_2024_13354106,
   author       = {Jarosch, Alexander Helmut and
-                  Jóhanesson, Tómas},
+                  Jóhannesson, Tómas},
   title        = {{alexjarosch/OpenFOAM-muI: v1.1.0 OpenFOAM mu(I) 
                    rheology}},
   month        = aug,
