@@ -1,16 +1,15 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-  =========                 |
-  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  7
-     \\/     M anipulation  |
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
     object      setFieldsDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -19,20 +18,6 @@ defaultFieldValues
 (
     volScalarFieldValue alpha.grain 0
 );
-
-// regions
-// (
-//     cylinderToCell
-//     {
-//         p1          (0   25 700);
-//         p2          (100 25 535);
-//         radius      10;
-//         fieldValues
-//         (
-//             volScalarFieldValue alpha.snow 1.0
-//         );
-//     }
-// );
 
 regions
 (
@@ -46,38 +31,5 @@ regions
     }
 );
 
-// regions
-// (
-//     rotatedBoxToCell
-//     {
-//         origin  (11 0 488);
-//         i       (52 0 -64);
-//         j       (0 10 0);
-//         k       (0 0 15);
-//         fieldValues
-//         (
-//             volScalarFieldValue alpha.snow 1
-//         );
-//     }
-// );
-
-// regions
-// (
-//     // Select based on surface
-//     surfaceToCell
-//     {
-//         file "constant/triSurface/release_dem.stl";
-//         outsidePoints ((296307 625997 668)); // definition of outside
-//         includeCut false; // cells cut by surface
-//         includeInside yes; // cells not on outside of surf
-//         includeOutside no; // cells on outside of surf
-//         nearDistance -1; // cells with centre near surf
-//         curvature 0.9; // cells within nearDistance
-//         fieldValues
-//         (
-//             volScalarFieldValue alpha.snow 1
-//         );
-//     }
-// );
 
 // ************************************************************************* //
