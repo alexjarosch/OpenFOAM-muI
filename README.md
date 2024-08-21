@@ -13,13 +13,13 @@ as a scientific basis for this work I follow the following papers:
 
 
 [![Release](https://img.shields.io/badge/release-1.1.0-blue.svg)](https://github.com/alexjarosch/OpenFOAM-muI)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4964189.svg)](https://doi.org/10.5281/zenodo.4964189)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13354106.svg)](https://doi.org/10.5281/zenodo.13354106)
 [![OpenFOAM v2406](https://img.shields.io/badge/OpenFOAM-v2406-brightgreen)](https://openfoam.com/)
 
 
 ## Citing the code
 
-If you use this OpenFOAM-muI module in your work/research/simulations, please cite the code in your publications by using the dedicated DOI number for a given code version: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4964189.svg)](https://doi.org/10.5281/zenodo.4964189)
+If you use this OpenFOAM-muI module in your work/research/simulations, please cite the code in your publications by using the dedicated DOI number for a given code version: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13354106.svg)](https://doi.org/10.5281/zenodo.13354106)
 
 The DOI number displayed here always refers to the latest release of OpenFOAM-muI. If you require a DOI for an older release, please refer to the Zenodo homepage of this code (by clicking the DOI badge above) and find a list of all DOI's for all code releases.
 
