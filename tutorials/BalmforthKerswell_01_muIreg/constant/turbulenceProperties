@@ -9,13 +9,12 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       uniformDimensionedScalarField;
-    object      hRef;
+    class       dictionary;
+    object      turbulenceProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 0 0 0 0 0];
-value           0.3;
+simulationType  laminar;
 
 
 // ************************************************************************* //
