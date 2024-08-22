@@ -99,7 +99,6 @@ However there are additional parameters I will explain below:
 - `rmHydAirP` is a binary switch. If `true`, the granular rheology will first subtract the hydrostatic air pressure from the effective pressure before calculating the granular viscosity. This is useful if you have large air masses above your granular medium.
 - `alphaSmall` is an additional interface stabilization parameter invented by Alexander H. Jarosch and Tómas Jóhannesson. If set below `1.0`, cells which have `alpha.snow < 1.0` will be treated as if they are completely filled with a granular medium. In the case above, where `alphaSmall = 0.01`, all interface cells that are filled with `alpha.snow >= 0.01` will get the full granular viscosity assigned.
 
-
 ## Examples
 
 In the `tutorials` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case "damBreak" found in `$FOAM_TUTORIALS/multiphase/interFoam/laminar/damBreak/damBreak/` in your local installation and are inspired by the benchmark of [Balmforth, N. J., & Kerswell, R. R. (2005). Granular collapse in two dimensions. Journal of Fluid Mechanics, 538, 399-428.](https://doi.org/10.1017/S0022112005005537). You can run a regularized and a non-regularized version of the examples.
@@ -113,6 +112,8 @@ Three versions of a 𝜇(I) rheology are implemented:
 * muI follows the classical, unregularized 𝜇(I) rheology, implemented in accordance with equation 2.21 in Barker & Gray 2017.
 * muIreg is the regularized version of a 𝜇(I) rheology, implemented accordance equation 6.3 in Barker & Gray 2017.
 * muIregp is the same regularized version of a 𝜇(I) rheology as muIreg, but the module saves less fields, thus suitable for production style runs.
+
+**Note:** the `alphaSmall` based interface stabilization is implemented in the *muIreg* and *muIregp* modules within release v1.1.0. In the current development version (after release v1.1.0) it is also implemented in the *muI* module.
 
 ## Regularized 𝜇(I) Python utility
 
