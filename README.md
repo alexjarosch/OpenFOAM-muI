@@ -97,6 +97,7 @@ However there are additional parameters I will explain below:
 - `nuMax` and `nuMin` are viscosity value limits that the user can define to avoid unrealistic high or low values
 - `pMin` is a pressure limit, required to avoid divisions by zero in the numerics. I find 1 Pascal works well for what I do, but this might be different in your application
 - `rmHydAirP` is a binary switch. If `true`, the granular rheology will first subtract the hydrostatic air pressure from the effective pressure before calculating the granular viscosity. This is useful if you have large air masses above your granular medium.
+- `rhoAir` is the air density used inside the granular rheology module when `rmHydAirP true;` is set and the module removes the hydrostatic air pressure.
 - `alphaSmall` is an additional interface stabilization parameter invented by Alexander H. Jarosch and Tómas Jóhannesson. If set below `1.0`, cells which have `alpha.snow < 1.0` will be treated as if they are completely filled with a granular medium. In the case above, where `alphaSmall = 0.01`, all interface cells that are filled with `alpha.snow >= 0.01` will get the full granular viscosity assigned.
 
 ## Examples
