@@ -14,9 +14,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-phases (snow air);
+phases (granul air);
 
-snow
+granul
 {
     transportModel muIreg;
     muIregCoeffs

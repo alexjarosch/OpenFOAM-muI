@@ -16,7 +16,7 @@ FoamFile
 
 solvers
 {
-    "alpha.snow.*"
+    "alpha.granul.*"
     {
         nAlphaCorr      2;
         nAlphaSubCycles 1;
