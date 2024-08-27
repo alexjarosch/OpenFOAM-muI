@@ -72,6 +72,8 @@ libs
 
 Parameters of the regularized 𝜇(I) rheology are defined in `constant/transportProperties`:
 ```
+granul
+{
     transportModel muIreg;
     muIregCoeffs
     {
@@ -90,7 +92,9 @@ Parameters of the regularized 𝜇(I) rheology are defined in `constant/transpor
         alphaSmall 0.01;
     }
     rho            2500;
+}
 ```
+As you can see, the granular medium phase is called `granul`. This name should be used at all times, as the 𝜇(I) rheology looks up this phase field during its granular viscosity calculation to use the below detailed interface stabilization scheme.
 
 For an explanation on what the 𝜇(I) parameters mean and recommended values for a given granular medium, please consult the published 𝜇(I) rheology literature.  
 However there are additional parameters I will explain below:  
@@ -98,14 +102,13 @@ However there are additional parameters I will explain below:
 - `pMin` is a pressure limit, required to avoid divisions by zero in the numerics. I find 1 Pascal works well for what I do, but this might be different in your application
 - `rmHydAirP` is a binary switch. If `true`, the granular rheology will first subtract the hydrostatic air pressure from the effective pressure before calculating the granular viscosity. This is useful if you have large air masses above your granular medium.
 - `rhoAir` is the air density used inside the granular rheology module when `rmHydAirP true;` is set and the module removes the hydrostatic air pressure.
-- `alphaSmall` is an additional interface stabilization parameter invented by Alexander H. Jarosch and Tómas Jóhannesson. If set below `1.0`, cells which have `alpha.snow < 1.0` will be treated as if they are completely filled with a granular medium. In the case above, where `alphaSmall = 0.01`, all interface cells that are filled with `alpha.snow >= 0.01` will get the full granular viscosity assigned.
+- `alphaSmall` is an additional interface stabilization parameter invented by Alexander H. Jarosch and Tómas Jóhannesson. If set below `1.0`, cells which have `alpha.granul < 1.0` will be treated as if they are completely filled with a granular medium. In the case above, where `alphaSmall = 0.01`, all interface cells that are filled with `alpha.granul >= 0.01` will get the full granular viscosity assigned. Should you not want to use this feature, just set `alphaSmall 1.0` in the `transportProperties` file.
 
 ## Examples
 
 In the `tutorials` directory you can find two tutorial cases, which are modified version of the OpenFOAM interFoam tutorial case "damBreak" found in `$FOAM_TUTORIALS/multiphase/interFoam/laminar/damBreak/damBreak/` in your local installation and are inspired by the benchmark of [Balmforth, N. J., & Kerswell, R. R. (2005). Granular collapse in two dimensions. Journal of Fluid Mechanics, 538, 399-428.](https://doi.org/10.1017/S0022112005005537). You can run a regularized and a non-regularized version of the examples.
 
 **Note:** To reproduce the actual benchmark data of Balmforth and Kerswell, a more advanced configuration of the example cases is required.  
-**Also Note:** The muIreg tutorial case labels the granular phase with `alpha.snow`, because I do alot of avalanche simulations. Within the muIreg rheology module I have to look up the alpha field and there it is hard-coded that the granular phase is called `alpha.snow`. So you can't change that setup without breaking the muIreg module's functionality.
 
 ## Which Implementation
 
@@ -113,8 +116,6 @@ Three versions of a 𝜇(I) rheology are implemented:
 * muI follows the classical, unregularized 𝜇(I) rheology, implemented in accordance with equation 2.21 in Barker & Gray 2017.
 * muIreg is the regularized version of a 𝜇(I) rheology, implemented accordance equation 6.3 in Barker & Gray 2017.
 * muIregp is the same regularized version of a 𝜇(I) rheology as muIreg, but the module saves less fields, thus suitable for production style runs.
-
-**Note:** the `alphaSmall` based interface stabilization is implemented in the *muIreg* and *muIregp* modules within release v1.1.0. In the current development version (after release v1.1.0) it is also implemented in the *muI* module.
 
 ## Regularized 𝜇(I) Python utility
 

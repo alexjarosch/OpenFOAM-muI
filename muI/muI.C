@@ -55,7 +55,7 @@ Foam::tmp<Foam::volScalarField>
 Foam::viscosityModels::muI::calcNu() const
 {
     const objectRegistry& db = U_.db();
-    const volScalarField& alphag = U_.mesh().lookupObject<volScalarField>("alpha.snow");
+    const volScalarField& alphag = U_.mesh().lookupObject<volScalarField>("alpha.granul");
 
     if (db.foundObject<volScalarField>("p")) {
         Info<< "Calculate mu(I) based on pressure" << endl;

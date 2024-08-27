@@ -14,9 +14,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-phases (grain air);
+phases (granul air);
 
-grain
+granul
 {
     transportModel muI;
     muICoeffs
